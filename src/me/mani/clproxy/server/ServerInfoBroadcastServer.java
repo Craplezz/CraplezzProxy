@@ -27,7 +27,18 @@ public class ServerInfoBroadcastServer extends Server {
     }
 
     @Override
+    public void onClientConnect(ClientConnection clientConnection) {
+        System.out.println("[SINFO] Client connected!");
+    }
+
+    @Override
+    public void onClientDisconnect(ClientConnection clientConnection) {
+        System.out.println("[SINFO] Client disconnected!");
+    }
+
+    @Override
     public void onPacketRecieve(ClientConnection clientConnection, Packet packet) {
+        System.out.println("[SINFO] Packet recieved!");
         if (packet instanceof ServerInfoUpdatePacket) {
             for (Map.Entry<String, ServerInfo> entry : Proxy.getInstance().getProxy().getServers().entrySet()) {
                 entry.getValue().ping(new Callback<ServerPing>() {

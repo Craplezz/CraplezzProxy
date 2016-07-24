@@ -5,7 +5,6 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import me.mani.clproxy.command.HubCommand;
 import me.mani.clproxy.command.TeamChatCommand;
-import me.mani.clproxy.listener.ServerConnectListener;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -13,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
 
 public class Proxy extends Plugin {
 
@@ -31,8 +29,6 @@ public class Proxy extends Plugin {
 		getProxy().getPluginManager().registerCommand(this, new HubCommand());
 		getProxy().getPluginManager().registerCommand(this, new TeamChatCommand());
 
-		getProxy().getPluginManager().registerListener(this, new ServerConnectListener());
-
 		mongoClient = new MongoClient(new ServerAddress("craplezz.de", 27017), Arrays.asList(MongoCredential.createCredential("Overload", "admin", "1999mani123".toCharArray())));
 
 		// TODO: Remove hard coded login
@@ -40,13 +36,7 @@ public class Proxy extends Plugin {
 		for (Entry<String, ServerInfo> server : getProxy().getServers().entrySet())
 			if (server.getKey().startsWith("lobby"))
 				lobbies.add(server.getValue());
-		serverManager = new ServerManager(mongoClient, "todo", "general");
-
-		getProxy().getScheduler().schedule(this, () -> {
-
-			serverManager.sendServerInfos();
-
-		}, 0L, 30L, TimeUnit.SECONDS);
+		serverManager = new ServerManager();
 	}
 
 	public List<ServerInfo> getLobbies() {
