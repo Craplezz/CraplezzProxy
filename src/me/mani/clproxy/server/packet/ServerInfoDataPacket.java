@@ -4,6 +4,7 @@ import me.mani.clapi.connection.packet.Packet;
 import me.mani.clproxy.util.CachedServerInfo;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 /**
  * @author Overload
@@ -18,6 +19,7 @@ public class ServerInfoDataPacket extends Packet {
     }
 
     public ServerInfoDataPacket(ByteBuffer byteBuffer) {
+        System.out.println("Received bytes:"  + Arrays.toString(byteBuffer.array()));
         byte[] bytes = new byte[byteBuffer.getInt()];
         byteBuffer.get(bytes);
         String serverName = new String(bytes);
@@ -51,6 +53,7 @@ public class ServerInfoDataPacket extends Packet {
         byteBuffer.putInt(serverInfo.getMotd().getBytes().length);
         byteBuffer.put(serverInfo.getMotd().getBytes());
         byteBuffer.put((byte) (serverInfo.isOffline() ? 1 : 0));
+        System.out.println("Sending bytes:"  + Arrays.toString(byteBuffer.array()));
         return byteBuffer;
     }
 
