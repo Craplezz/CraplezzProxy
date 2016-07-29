@@ -21,11 +21,13 @@ public class ServerInfoBroadcastServer extends Server {
     @Override
     public void onClientConnect(ClientConnection clientConnection) {
         System.out.println("[SINFO] Client connected!");
+        Proxy.getServerManager().sendExistingServerInfos(clientConnection);
     }
 
     @Override
     public void onClientDisconnect(ClientConnection clientConnection) {
         System.out.println("[SINFO] Client disconnected!");
+        Proxy.getServerManager().removeClient(clientConnection);
     }
 
     @Override
@@ -33,7 +35,7 @@ public class ServerInfoBroadcastServer extends Server {
         System.out.println("[SINFO] Packet recieved!");
         System.out.println(packet);
         if (packet instanceof ServerInfoDataPacket) {
-            Proxy.getServerManager().updateServerInfo(clientConnection.getSocket().getInetAddress(), ((ServerInfoDataPacket) packet).getServerInfo());
+            Proxy.getServerManager().updateServerInfo(clientConnection, ((ServerInfoDataPacket) packet).getServerInfo());
         }
     }
 
