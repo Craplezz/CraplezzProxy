@@ -21,11 +21,16 @@ public class ServerInfoDataPacket extends Packet {
         byte[] bytes = new byte[byteBuffer.getInt()];
         byteBuffer.get(bytes);
         String serverName = new String(bytes);
+        System.out.println("ServerName: " + serverName);
         int onlinePlayers = byteBuffer.getInt();
+        System.out.println("OnlinePlayers: " + onlinePlayers);
         int maxPlayers = byteBuffer.getInt();
+        System.out.println("MaxPlayers: " + maxPlayers);
         bytes = new byte[byteBuffer.getInt()];
         byteBuffer.get(bytes);
         String motd = new String(bytes);
+        System.out.println("MotD: " + motd);
+        System.out.println("Buffer: " + byteBuffer.position() + ", " + byteBuffer.limit());
         boolean isOffline = byteBuffer.get() == (byte) 1;
         serverInfo = new CachedServerInfo(serverName, maxPlayers, onlinePlayers, motd);
         serverInfo.setOffline(isOffline);
@@ -33,17 +38,17 @@ public class ServerInfoDataPacket extends Packet {
 
     @Override
     public byte getPacketId() {
-        return 1;
+        return 0;
     }
 
     @Override
-    public ByteBuffer toBuffer() {
-        ByteBuffer byteBuffer = ByteBuffer.allocate(4 + serverInfo.getServerName().length() + 8 + 4 + serverInfo.getMotd().length() + 1);
-        byteBuffer.putInt(serverInfo.getServerName().length());
+    public ByteBuffer internalToBuffer() {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(4 + serverInfo.getServerName().getBytes().length + 8 + 4 + serverInfo.getMotd().getBytes().length + 1);
+        byteBuffer.putInt(serverInfo.getServerName().getBytes().length);
         byteBuffer.put(serverInfo.getServerName().getBytes());
         byteBuffer.putInt(serverInfo.getOnlinePlayers());
         byteBuffer.putInt(serverInfo.getMaxPlayers());
-        byteBuffer.putInt(serverInfo.getMotd().length());
+        byteBuffer.putInt(serverInfo.getMotd().getBytes().length);
         byteBuffer.put(serverInfo.getMotd().getBytes());
         byteBuffer.put((byte) (serverInfo.isOffline() ? 1 : 0));
         return byteBuffer;
